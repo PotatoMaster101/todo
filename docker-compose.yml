@@ -1,0 +1,31 @@
+services:
+  api:
+    container_name: todo
+    hostname: todo
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "Password123!"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/auth.pfx"
+      ASPNETCORE_URLS: "https://+:443;http://+:80"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+  db:
+    container_name: postgres
+    hostname: postgres
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "P@ssw0rd123!!!"
+    volumes:
+      - data:/var/lib/postgresql/data
+volumes:
+  data:
